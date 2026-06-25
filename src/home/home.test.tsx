@@ -50,9 +50,6 @@ describe('home page', () => {
 
     expect(screen.getByAltText(/Bahmni Logo/i)).toBeInTheDocument()
     expect(screen.getByText(/welcome to lab entry/i)).toBeInTheDocument()
-    expect(
-      screen.getByText(/please click on the search icon above to get started/i),
-    ).toBeInTheDocument()
   })
 })
 

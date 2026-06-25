@@ -14,3 +14,10 @@
       color: white;
     }
 }
+
+// Force global injection to override the OpenMRS component library
+:global {
+  button[name="SearchPatientIcon"] {
+    display: none !important;
+  }
+}

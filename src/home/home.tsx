@@ -144,9 +144,6 @@ const Home = () => {
       <h1 className={classes.welcomeText}>
         {t('welcome', 'WELCOME TO LAB ENTRY')}
       </h1>
-      <span className={classes.helpText}>
-        {t('helpText', 'Please click on the search icon above to get started')}
-      </span>
       {renderPatientTable()}
     </div>
   )
