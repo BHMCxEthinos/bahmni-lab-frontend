@@ -1,0 +1,484 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at https://www.bahmni.org/license/mplv2hd.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
+export const mockTestResultResponse: any = {
+  data: {
+    uuid: '07a128f7-f596-45d5-a2a9-c447bc9e5112',
+    name: {
+      display: 'HIV Test',
+      uuid: '1451BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+      name: 'HIV Test',
+      locale: 'en',
+      localePreferred: true,
+      conceptNameType: 'FULLY_SPECIFIED',
+      links: [
+        {
+          rel: 'self',
+          uri:
+            'http://localhost:8080/openmrshttp://localhost:8080/openmrs/ws/rest/v1/concept/1356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/name/1451BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+          resourceAlias: 'name',
+        },
+        {
+          rel: 'full',
+          uri:
+            'http://localhost:8080/openmrshttp://localhost:8080/openmrs/ws/rest/v1/concept/1356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/name/1451BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB?v=full',
+          resourceAlias: 'name',
+        },
+      ],
+      resourceVersion: '1.9',
+    },
+    names: [
+      {
+        display: 'HIV Test',
+        uuid: '86807BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+        name: 'HIV Test',
+        locale: 'en',
+        localePreferred: false,
+        conceptNameType: 'SHORT',
+        links: [],
+        resourceVersion: '1.9',
+      },
+      {
+        display: 'HIV Test',
+        uuid: '1451BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+        name: 'HIV Test',
+        locale: 'en',
+        localePreferred: true,
+        conceptNameType: 'FULLY_SPECIFIED',
+        links: [],
+        resourceVersion: '1.9',
+      },
+    ],
+    set: false,
+    datatype: {
+      uuid: '8d4a5cca-c2cc-11de-8d13-0010c6dffd0f',
+      display: 'Boolean',
+      name: 'Boolean',
+      description: 'Boolean value (yes/no, true/false)',
+      hl7Abbreviation: 'BIT',
+      retired: false,
+      links: [],
+      resourceVersion: '1.8',
+    },
+    conceptClass: {
+      uuid: '8d4907b2-c2cc-11de-8d13-0010c6dffd0f',
+      display: 'Test',
+      name: 'Test',
+      description: 'Lab Tests',
+      retired: false,
+      links: [],
+      resourceVersion: '1.8',
+    },
+    hiNormal: null,
+    hiAbsolute: null,
+    hiCritical: null,
+    lowNormal: null,
+    lowAbsolute: null,
+    lowCritical: null,
+    units: null,
+    allowDecimal: null,
+    handler: null,
+    descriptions: [
+      {
+        display: 'Any form of test for HIV-1',
+        uuid: '1344FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF',
+        description: 'Any form of test for HIV-1',
+        locale: 'en',
+        links: [],
+        resourceVersion: '1.9',
+      },
+    ],
+    answers: [],
+    setMembers: [],
+    resourceVersion: '2.0',
+  },
+}
+
+export const mockPanelTestResult = {
+  data: {
+    uuid: '5b0cdc41-7371-4c2f-a1e4-ed1bf7416a8d',
+    name: {
+      display: 'Anaemia Panel',
+      uuid: '8ce76a2c-e63d-4358-aabb-f8c5a6239fbd',
+      name: 'Anaemia Panel',
+      locale: 'en',
+      localePreferred: true,
+      conceptNameType: 'FULLY_SPECIFIED',
+      links: [],
+      resourceVersion: '1.9',
+    },
+    names: [
+      {
+        display: 'Anaemia Panel',
+        uuid: '110966BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+        name: 'Anaemia Panel',
+        locale: 'en',
+        localePreferred: true,
+        conceptNameType: 'FULLY_SPECIFIED',
+        links: [],
+        resourceVersion: '1.9',
+      },
+    ],
+    set: true,
+    datatype: {
+      uuid: '8d4a4c94-c2cc-11de-8d13-0010c6dffd0f',
+      display: 'N/A',
+      name: 'N/A',
+      description: 'Not associated with a datatype (e.g., term answers, sets)',
+      hl7Abbreviation: 'ZZ',
+      retired: false,
+      links: [],
+      resourceVersion: '1.8',
+    },
+    conceptClass: {
+      uuid: '8d492026-c2cc-11de-8d13-0010c6dffd0f',
+      display: 'LabSet',
+      name: 'LabSet',
+      description: 'Panels',
+      retired: false,
+      links: [],
+      resourceVersion: '1.8',
+    },
+    hiNormal: null,
+    hiAbsolute: null,
+    hiCritical: null,
+    lowNormal: null,
+    lowAbsolute: null,
+    lowCritical: null,
+    units: null,
+    allowDecimal: null,
+    handler: null,
+    descriptions: [],
+    answers: [],
+    setMembers: [
+      {
+        uuid: '07a128f7-f596-45d5-a2a9-c447bc9e5112',
+        name: {
+          display: 'Absolute Eosinphil Count',
+          uuid: 'fd2ec116-74c9-4d48-86cf-1c7e8aa1a748',
+          name: 'Absolute Eosinphil Count',
+          locale: 'en',
+          localePreferred: true,
+          conceptNameType: 'FULLY_SPECIFIED',
+          links: [],
+          resourceVersion: '1.9',
+        },
+        names: [
+          {
+            display: 'Hct',
+            uuid: '86747BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+            name: 'Hct',
+            locale: 'en',
+            localePreferred: false,
+            conceptNameType: 'SHORT',
+            links: [],
+            resourceVersion: '1.9',
+          },
+          {
+            display: 'Hematocrit',
+            uuid: '1066BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+            name: 'Hematocrit',
+            locale: 'en',
+            localePreferred: true,
+            conceptNameType: 'FULLY_SPECIFIED',
+            links: [],
+            resourceVersion: '1.9',
+          },
+        ],
+        set: false,
+        datatype: {
+          uuid: '8d4a4488-c2cc-11de-8d13-0010c6dffd0f',
+          display: 'Numeric',
+          name: 'Numeric',
+          description:
+            'Numeric value, including integer or float (e.g., creatinine, weight)',
+          hl7Abbreviation: 'NM',
+          retired: false,
+          links: [],
+          resourceVersion: '1.8',
+        },
+        conceptClass: {
+          uuid: '8d4907b2-c2cc-11de-8d13-0010c6dffd0f',
+          display: 'Test',
+          name: 'Test',
+          description: 'Lab Tests',
+          retired: false,
+          links: [],
+          resourceVersion: '1.8',
+        },
+        hiNormal: 51.9,
+        hiAbsolute: 100.0,
+        hiCritical: null,
+        lowNormal: 32.3,
+        lowAbsolute: 0.0,
+        lowCritical: 21.0,
+        units: '%',
+        allowDecimal: true,
+        handler: null,
+        descriptions: [
+          {
+            display:
+              'Percent of whole blood that is composed of red blood cells.',
+            uuid: '1017FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF',
+            description:
+              'Percent of whole blood that is composed of red blood cells.',
+            locale: 'en',
+            links: [],
+            resourceVersion: '1.9',
+          },
+        ],
+        answers: [],
+        setMembers: [],
+        resourceVersion: '2.0',
+      },
+      {
+        uuid: '21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+        name: {
+          display: 'Haemoglobin',
+          uuid: 'b8b8c317-43d2-4c4b-a67d-2ef3782c53eb',
+          name: 'Rapid test for malaria',
+          locale: 'en',
+          localePreferred: true,
+          conceptNameType: 'FULLY_SPECIFIED',
+          links: [],
+          resourceVersion: '1.9',
+        },
+        names: [
+          {
+            display: 'RDT Malaria',
+            uuid: '86926BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+            name: 'RDT Malaria',
+            locale: 'en',
+            localePreferred: false,
+            conceptNameType: 'SHORT',
+            links: [],
+            resourceVersion: '1.9',
+          },
+        ],
+        set: false,
+        datatype: {
+          uuid: '8d4a48b6-c2cc-11de-8d13-0010c6dffd0f',
+          display: 'Coded',
+          name: 'Coded',
+          description:
+            'Value determined by term dictionary lookup (i.e., term identifier)',
+          hl7Abbreviation: 'CWE',
+          retired: false,
+          links: [],
+          resourceVersion: '1.8',
+        },
+        conceptClass: {
+          uuid: '8d4907b2-c2cc-11de-8d13-0010c6dffd0f',
+          display: 'Test',
+          name: 'Test',
+          description: 'Lab Tests',
+          retired: false,
+          links: [
+            {
+              rel: 'self',
+              uri:
+                'http://localhost/openmrs/ws/rest/v1/conceptclass/8d4907b2-c2cc-11de-8d13-0010c6dffd0f',
+              resourceAlias: 'conceptclass',
+            },
+          ],
+          resourceVersion: '1.8',
+        },
+        hiNormal: null,
+        hiAbsolute: null,
+        hiCritical: null,
+        lowNormal: null,
+        lowAbsolute: null,
+        lowCritical: null,
+        units: null,
+        allowDecimal: null,
+        handler: null,
+        descriptions: [
+          {
+            display: 'Test for rapid diagnosis of Malaria.',
+            uuid: '1483FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF',
+            description: 'Test for rapid diagnosis of Malaria.',
+            locale: 'en',
+            links: [
+              {
+                rel: 'self',
+                uri:
+                  'http://localhost/openmrs/ws/rest/v1/concept/1643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/description/1483FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF',
+                resourceAlias: 'description',
+              },
+            ],
+            resourceVersion: '1.9',
+          },
+        ],
+        answers: [
+          {
+            uuid: '703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+            name: {
+              display: 'Positive',
+              uuid: '737BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+              name: 'Positive',
+              locale: 'en',
+              localePreferred: true,
+              conceptNameType: 'FULLY_SPECIFIED',
+              links: [],
+              resourceVersion: '1.9',
+            },
+            names: [
+              {
+                display: 'Positive',
+                uuid: '737BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+                name: 'Positive',
+                locale: 'en',
+                localePreferred: true,
+                conceptNameType: 'FULLY_SPECIFIED',
+                links: [],
+                resourceVersion: '1.9',
+              },
+            ],
+            displayString: 'Positive',
+            resourceVersion: '2.0',
+          },
+        ],
+        setMembers: [],
+        resourceVersion: '2.0',
+      },
+    ],
+    resourceVersion: '2.0',
+  },
+}
+
+export const mockTestResult = {
+  data: {
+    uuid: '21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+    name: {
+      display: 'Haemoglobin',
+      uuid: '23BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+      name: 'Haemoglobin',
+      locale: 'en',
+      localePreferred: true,
+      conceptNameType: 'FULLY_SPECIFIED',
+      resourceVersion: '1.9',
+    },
+    names: [
+      {
+        display: 'Hemoglobin',
+        uuid: '110964BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+        name: 'Hemoglobin',
+        locale: 'en',
+        localePreferred: false,
+        conceptNameType: null,
+        links: [
+          {
+            rel: 'self',
+            uri:
+              'http://localhost:8080/openmrs/ws/rest/v1/concept/21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/name/110964BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+            resourceAlias: 'name',
+          },
+          {
+            rel: 'full',
+            uri:
+              'http://localhost:8080/openmrs/ws/rest/v1/concept/21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/name/110964BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB?v=full',
+            resourceAlias: 'name',
+          },
+        ],
+        resourceVersion: '1.9',
+      },
+      {
+        display: 'Haemoglobin',
+        uuid: '23BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+        name: 'Haemoglobin',
+        locale: 'en',
+        localePreferred: true,
+        conceptNameType: 'FULLY_SPECIFIED',
+        links: [
+          {
+            rel: 'self',
+            uri:
+              'http://localhost:8080/openmrs/ws/rest/v1/concept/21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/name/23BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
+            resourceAlias: 'name',
+          },
+          {
+            rel: 'full',
+            uri:
+              'http://localhost:8080/openmrs/ws/rest/v1/concept/21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/name/23BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB?v=full',
+            resourceAlias: 'name',
+          },
+        ],
+        resourceVersion: '1.9',
+      },
+    ],
+    set: false,
+    datatype: {
+      uuid: '8d4a4488-c2cc-11de-8d13-0010c6dffd0f',
+      display: 'Numeric',
+      name: 'Numeric',
+      description:
+        'Numeric value, including integer or float (e.g., creatinine, weight)',
+      hl7Abbreviation: 'NM',
+      retired: false,
+      links: [],
+      resourceVersion: '1.8',
+    },
+    conceptClass: {
+      uuid: '8d4907b2-c2cc-11de-8d13-0010c6dffd0f',
+      display: 'Test',
+      name: 'Test',
+      description: 'Lab Tests',
+      retired: false,
+      links: [],
+      resourceVersion: '1.8',
+    },
+    hiNormal: 17.8,
+    hiAbsolute: null,
+    hiCritical: null,
+    lowNormal: 10.4,
+    lowAbsolute: 0,
+    lowCritical: 7,
+    units: 'g/dL',
+    allowDecimal: true,
+    handler: null,
+    descriptions: [
+      {
+        display:
+          'The iron-containing respiratory pigment in red blood cells of vertebrates, consisting of about 6 percent heme and 94 percent globin.',
+        uuid: '21FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF',
+        description:
+          'The iron-containing respiratory pigment in red blood cells of vertebrates, consisting of about 6 percent heme and 94 percent globin.',
+        locale: 'en',
+        links: [
+          {
+            rel: 'self',
+            uri:
+              'http://localhost:8080/openmrs/ws/rest/v1/concept/21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/description/21FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF',
+            resourceAlias: 'description',
+          },
+          {
+            rel: 'full',
+            uri:
+              'http://localhost:8080/openmrs/ws/rest/v1/concept/21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/description/21FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF?v=full',
+            resourceAlias: 'description',
+          },
+        ],
+        resourceVersion: '1.9',
+      },
+    ],
+    answers: [],
+    setMembers: [],
+    resourceVersion: '2.0',
+  },
+}
+
+export const mockSelectedPendingOrder = [
+  {
+    id: '5b0cdc41-7371-4c2f-a1e4-ed1bf7416a8d',
+    testName: 'Anaemia panel',
+    date: 'May 03, 2022',
+    orderedBy: 'Superman',
+    conceptUuid: '5b0cdc41-7371-4c2f-a1e4-ed1bf7416a8d',
+  },
+]

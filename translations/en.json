@@ -1,0 +1,9 @@
+{
+  "title": "Lab Entry App",
+  "welcome": "Welcome To Lab Entry",
+  "helpText": "Please Click On The Search Icon Above To Get Started",
+  "activePatientList": "Active Patient List",
+  "patientId": "Patient Id",
+  "patientName": "Patient Name",
+  "noPatients": "No patients found."
+}

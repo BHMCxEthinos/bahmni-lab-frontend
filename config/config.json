@@ -1,0 +1,29 @@
+{
+  "@openmrs/esm-login-app": {
+    "chooseLocation": {
+      "enabled": false
+    },
+    "provider":{
+      "type":"oauth2",
+      "loginUrl":"/bahmni/home",
+      "logoutUrl":"/bahmni/home"
+    }
+  },
+  "@openmrs/esm-primary-navigation-app": {
+    "logo": {
+      "name": " "
+    },
+    "extensionSlots": {
+      "top-nav-actions-slot": {
+        "remove": [
+          "add-patient-action"
+        ]
+      }
+    }
+  },
+  "@openmrs/esm-patient-search-app": {
+    "search": {
+      "hideActionsOverflow": true
+    }
+  }
+}

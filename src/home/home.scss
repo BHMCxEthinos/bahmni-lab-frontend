@@ -1,0 +1,57 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at https://www.bahmni.org/license/mplv2hd.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
+.homeContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 90vh;
+    gap: 1rem;
+    margin-top: 10%;
+    @media all and (min-width: 768px) {
+        gap: 1rem;
+        margin-top: 5%;
+    }
+}
+
+.image {
+    text-align: center;
+}
+
+.image img {
+    width: 60vw;
+    @media all and (min-width: 768px) {
+        width: 30vw;
+    }
+}
+
+.welcomeText {
+    font-size: 6vw;
+    @media all and (min-width: 768px) {
+        font-size: 3vw;
+    }
+    font-weight: 600;
+}
+
+.helpText {
+    font-size: 4vw;
+    font-weight: 400;
+    line-height: 1.199;
+    letter-spacing: 0;
+    font-style: oblique;
+    @media all and (min-width: 768px) {
+        font-size: 2vw;
+    }
+}
+
+.patientListSection {
+    margin-top: 2rem;
+    text-align: center;
+}

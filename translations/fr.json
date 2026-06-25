@@ -1,0 +1,9 @@
+{
+  "title": "Application d'Entrée de Laboratoire",
+  "welcome": "Bienvenue à l'entrée du laboratoire",
+  "helpText": "Veuillez Cliquer Sur L'icône De Recherche Ci-dessus Pour Commencer",
+  "activePatientList": "Liste des Patients Actifs",
+  "patientId": "ID Patient",
+  "patientName": "Nom du Patient",
+  "noPatients": "Aucun patient trouvé."
+}

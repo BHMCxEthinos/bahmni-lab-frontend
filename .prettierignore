@@ -1,0 +1,17 @@
+dist/
+node_modules/
+**/*.css
+**/*.scss
+**/*.md
+**/*.json
+**/*.html
+omrs-app-shell/
+
+.vscode/
+.DS_Store
+
+/.cache
+/build
+/coverage
+.github/
+/package
