@@ -330,20 +330,25 @@ export async function saveTestDiagnosticReport(
           observation.valueString = labItem.value
         }
     }
-
     applyOrderReferenceToObservation(observation, selectedPendingOrder?.id)
 
     obsEntries.push({
       fullUrl: parentObsId ? `urn:uuid:${parentObsId}` : `urn:uuid:${obsId}`,
       resource: observation,
     })
-    resultArray.push(getObservationReference(obsId))
+    resultArray.push(
+      parentObsId
+        ? getObservationReference(parentObsId)
+        : getObservationReference(obsId),
+    )
   }
 
   if (selectedTest.setMembers && selectedTest.setMembers.length > 0) {
     const parentObsId = crypto.randomUUID()
     createObservation(selectedTest, 0, parentObsId)
-    selectedTest.setMembers.forEach(createObservation)
+    selectedTest.setMembers.forEach((item, idx) =>
+      createObservation(item, idx, undefined),
+    )
     resultArray = []
     resultArray.push(getObservationReference(parentObsId))
   } else {
@@ -352,7 +357,7 @@ export async function saveTestDiagnosticReport(
 
   const dr: DiagnosticReportResource = {
     resourceType: 'DiagnosticReport',
-    id: drId,
+    id: `urn:uuid:${drId}`,
     status: 'final',
     category: labCategory,
     code: {

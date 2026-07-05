@@ -6,7 +6,7 @@ export const panelDiagnosticReportBody = {
       fullUrl: 'urn:uuid:mock-dr-uuid',
       resource: {
         resourceType: 'DiagnosticReport',
-        id: 'mock-dr-uuid',
+        id: 'urn:uuid:mock-dr-uuid',
         status: 'final',
         category: [
           {
@@ -58,88 +58,10 @@ export const panelDiagnosticReportBody = {
       },
     },
     {
-      fullUrl: 'urn:uuid:[object Object],[object Object]',
+      fullUrl: 'urn:uuid:mock-obs-uuid-3',
       resource: {
         resourceType: 'Observation',
-        id: [
-          {
-            uuid: '07a128f7-f596-45d5-a2a9-c447bc9e5112',
-            name: {
-              display: 'Absolute Eosinphil Count',
-              uuid: 'fd2ec116-74c9-4d48-86cf-1c7e8aa1a748',
-            },
-            names: [
-              {
-                display: 'Hct',
-                uuid: '86747BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
-                name: 'Hct',
-                locale: 'en',
-                localePreferred: false,
-                conceptNameType: 'SHORT',
-                links: [],
-                resourceVersion: '1.9',
-              },
-              {
-                display: 'Hematocrit',
-                uuid: '1066BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
-                name: 'Hematocrit',
-                locale: 'en',
-                localePreferred: true,
-                conceptNameType: 'FULLY_SPECIFIED',
-                links: [],
-                resourceVersion: '1.9',
-              },
-            ],
-            set: false,
-            conceptClass: {
-              uuid: '8d4907b2-c2cc-11de-8d13-0010c6dffd0f',
-              display: 'Test',
-              name: 'Test',
-              description: 'Lab Tests',
-              retired: false,
-              links: [],
-              resourceVersion: '1.8',
-            },
-            setMembers: [],
-          },
-          {
-            uuid: '21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-            name: {
-              display: 'Haemoglobin',
-              uuid: 'b8b8c317-43d2-4c4b-a67d-2ef3782c53eb',
-            },
-            names: [
-              {
-                display: 'RDT Malaria',
-                uuid: '86926BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
-                name: 'RDT Malaria',
-                locale: 'en',
-                localePreferred: false,
-                conceptNameType: 'SHORT',
-                links: [],
-                resourceVersion: '1.9',
-              },
-            ],
-            set: false,
-            conceptClass: {
-              uuid: '8d4907b2-c2cc-11de-8d13-0010c6dffd0f',
-              display: 'Test',
-              name: 'Test',
-              description: 'Lab Tests',
-              retired: false,
-              links: [
-                {
-                  rel: 'self',
-                  uri:
-                    'http://localhost/openmrs/ws/rest/v1/conceptclass/8d4907b2-c2cc-11de-8d13-0010c6dffd0f',
-                  resourceAlias: 'conceptclass',
-                },
-              ],
-              resourceVersion: '1.8',
-            },
-            setMembers: [],
-          },
-        ],
+        id: 'mock-obs-uuid-3',
         status: 'final',
         code: {
           coding: [
@@ -158,88 +80,10 @@ export const panelDiagnosticReportBody = {
       },
     },
     {
-      fullUrl: 'urn:uuid:[object Object],[object Object]',
+      fullUrl: 'urn:uuid:mock-obs-uuid-4',
       resource: {
         resourceType: 'Observation',
-        id: [
-          {
-            uuid: '07a128f7-f596-45d5-a2a9-c447bc9e5112',
-            name: {
-              display: 'Absolute Eosinphil Count',
-              uuid: 'fd2ec116-74c9-4d48-86cf-1c7e8aa1a748',
-            },
-            names: [
-              {
-                display: 'Hct',
-                uuid: '86747BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
-                name: 'Hct',
-                locale: 'en',
-                localePreferred: false,
-                conceptNameType: 'SHORT',
-                links: [],
-                resourceVersion: '1.9',
-              },
-              {
-                display: 'Hematocrit',
-                uuid: '1066BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
-                name: 'Hematocrit',
-                locale: 'en',
-                localePreferred: true,
-                conceptNameType: 'FULLY_SPECIFIED',
-                links: [],
-                resourceVersion: '1.9',
-              },
-            ],
-            set: false,
-            conceptClass: {
-              uuid: '8d4907b2-c2cc-11de-8d13-0010c6dffd0f',
-              display: 'Test',
-              name: 'Test',
-              description: 'Lab Tests',
-              retired: false,
-              links: [],
-              resourceVersion: '1.8',
-            },
-            setMembers: [],
-          },
-          {
-            uuid: '21AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-            name: {
-              display: 'Haemoglobin',
-              uuid: 'b8b8c317-43d2-4c4b-a67d-2ef3782c53eb',
-            },
-            names: [
-              {
-                display: 'RDT Malaria',
-                uuid: '86926BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB',
-                name: 'RDT Malaria',
-                locale: 'en',
-                localePreferred: false,
-                conceptNameType: 'SHORT',
-                links: [],
-                resourceVersion: '1.9',
-              },
-            ],
-            set: false,
-            conceptClass: {
-              uuid: '8d4907b2-c2cc-11de-8d13-0010c6dffd0f',
-              display: 'Test',
-              name: 'Test',
-              description: 'Lab Tests',
-              retired: false,
-              links: [
-                {
-                  rel: 'self',
-                  uri:
-                    'http://localhost/openmrs/ws/rest/v1/conceptclass/8d4907b2-c2cc-11de-8d13-0010c6dffd0f',
-                  resourceAlias: 'conceptclass',
-                },
-              ],
-              resourceVersion: '1.8',
-            },
-            setMembers: [],
-          },
-        ],
+        id: 'mock-obs-uuid-4',
         status: 'final',
         code: {
           coding: [
