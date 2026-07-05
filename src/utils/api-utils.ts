@@ -41,6 +41,9 @@ export const saveDiagnosticReportURL =
 export const getUpdateFulfillerStatusURL = (orderId: string) =>
   `/ws/rest/v1/order/${orderId}/fulfillerdetails`
 
+export const getOrderEncounterURL = (orderUuid: string) =>
+  `/ws/rest/v1/order/${orderUuid}?v=custom:(uuid,encounter:(uuid))`
+
 export const auditLogURL = '/ws/rest/v1/auditlog'
 
 export const auditLogGlobalPropertyURL =

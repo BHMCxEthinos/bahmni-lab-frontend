@@ -14,6 +14,7 @@ export interface LabOrders {
   orderDate: number
   orderUuid: string
   encounterUuid?: string
+  encounter?: {uuid: string}
   provider: string
   providerUuid: string
   fulfillerStatus: string
@@ -168,29 +169,30 @@ interface Name {
   resourceVersion: string
 }
 export interface TestResultsLabOrder {
-  data: {
-    uuid: string
-    name: Name
-    names: Array<Name>
-    set: boolean
-    datatype: Datatype
-    conceptClass: Datatype
-    hiNormal: string
-    hiAbsolute: string
-    hiCritical: string
-    lowNormal: string
-    lowAbsolute: string
-    lowCritical: string
-    units: string
-    allowDecimal: string
-    handler: string
-    descriptions: Array<Descriptions>
-    answers: any
-    setMembers: Array<TestResultsLabOrder> //doubt
-    resourceVersion: string
-  }
+  data: TestResultConcept
 }
-interface Datatype {
+export interface TestResultConcept {
+  uuid: string
+  name: Name
+  names: Array<Name>
+  set: boolean
+  datatype: Datatype
+  conceptClass: Datatype
+  hiNormal: string
+  hiAbsolute: string
+  hiCritical: string
+  lowNormal: string
+  lowAbsolute: string
+  lowCritical: string
+  units: string
+  allowDecimal: string
+  handler: string
+  descriptions: Array<Descriptions>
+  answers: any
+  setMembers?: Array<TestResultConcept>
+  resourceVersion: string
+}
+export interface Datatype {
   uuid: string
   display: string
   name: string

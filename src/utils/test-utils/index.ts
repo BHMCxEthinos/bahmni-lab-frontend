@@ -9,6 +9,33 @@
 
 import {openmrsFetch} from '@openmrs/esm-framework'
 
+function deepEqual(a: unknown, b: unknown): boolean {
+  if (a === b) {
+    return true
+  }
+  if (typeof a !== typeof b || a === null || b === null) {
+    return false
+  }
+  if (Array.isArray(a)) {
+    return (
+      Array.isArray(b) &&
+      a.length === b.length &&
+      a.every((value, index) => deepEqual(value, b[index]))
+    )
+  }
+  if (typeof a === 'object') {
+    const objectA = a as Record<string, unknown>
+    const objectB = b as Record<string, unknown>
+    const keysA = Object.keys(objectA).sort()
+    const keysB = Object.keys(objectB).sort()
+    if (keysA.join() !== keysB.join()) {
+      return false
+    }
+    return keysA.every(key => deepEqual(objectA[key], objectB[key]))
+  }
+  return false
+}
+
 export const localStorageMock = (function() {
   let store = {}
 
@@ -42,7 +69,11 @@ export function verifyApiCall(
     .reduce((acc, call) => {
       if (call[1].method === 'GET') return acc || true
       if (call[1].method === 'POST' && !body) return acc || true
-      if (body && call[1].body === body) return acc || true
+      if (body && call[1].body) {
+        return (
+          acc || deepEqual(JSON.parse(call[1].body), JSON.parse(body as string))
+        )
+      }
       return acc
     }, false)
 

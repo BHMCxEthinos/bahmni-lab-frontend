@@ -7,10 +7,11 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 
-import {FetchResponse} from '@openmrs/esm-framework'
+import {FetchResponse, openmrsFetch} from '@openmrs/esm-framework'
 import {Datatype, PendingLabOrders} from '../../types'
 import {LabTest} from '../../types/selectTest'
 import {
+  getOrderEncounterURL,
   postApiCall,
   saveDiagnosticReportURL,
   uploadDocumentURL,
@@ -57,6 +58,7 @@ interface ObservationResource {
   }
   subject: FhirReference
   effectiveDateTime: Date
+  basedOn?: FhirReference[]
   valueQuantity?: ValueQuantity
   valueCodeableConcept?: {
     coding: [
@@ -106,6 +108,57 @@ const wrapInBundle = (entries: BundleEntry[]): BundleRequestType => ({
   entry: entries,
 })
 
+const getServiceRequestReference = (orderId: string): FhirReference => ({
+  reference: `ServiceRequest/${orderId}`,
+})
+
+const getEncounterReference = (encounterUuid: string): FhirReference => ({
+  reference: `Encounter/${encounterUuid}`,
+})
+
+const getObservationReference = (resourceId: string): FhirReference => ({
+  reference: `Observation/${resourceId}`,
+})
+
+async function resolveOrderEncounterUuid(
+  pendingOrder: PendingLabOrders | null | undefined,
+  ac: AbortController,
+): Promise<string | undefined> {
+  if (!pendingOrder) {
+    return undefined
+  }
+  if (pendingOrder.encounterUuid) {
+    return pendingOrder.encounterUuid
+  }
+  try {
+    const response = await openmrsFetch(getOrderEncounterURL(pendingOrder.id), {
+      method: 'GET',
+      signal: ac.signal,
+    })
+    return response?.data?.encounter?.uuid
+  } catch {
+    return undefined
+  }
+}
+
+function applyOrderEncounterToReport(
+  report: DiagnosticReportResource,
+  encounterUuid: string | undefined,
+) {
+  if (encounterUuid) {
+    report.encounter = getEncounterReference(encounterUuid)
+  }
+}
+
+function applyOrderReferenceToObservation(
+  observation: ObservationResource,
+  orderId: string | undefined,
+) {
+  if (orderId) {
+    observation.basedOn = [getServiceRequestReference(orderId)]
+  }
+}
+
 export function uploadFile(
   patientUuid: string,
   fileContent: string,
@@ -127,7 +180,7 @@ const uploadFileRequestBody = (fileContent, fileType, patientUuid) => {
   }
 }
 
-export function saveDiagnosticReport(
+export async function saveDiagnosticReport(
   pendingOrder: PendingLabOrders | null,
   patientUuid: string,
   performerUuid: string,
@@ -140,6 +193,7 @@ export function saveDiagnosticReport(
   ac: AbortController,
 ) {
   const drId = crypto.randomUUID()
+  const encounterUuid = await resolveOrderEncounterUuid(pendingOrder, ac)
 
   const dr: DiagnosticReportResource = {
     resourceType: 'DiagnosticReport',
@@ -168,7 +222,7 @@ export function saveDiagnosticReport(
     dr.conclusion = reportConclusion
   }
   if (pendingOrder) {
-    dr.basedOn = [{reference: `ServiceRequest/${pendingOrder.id}`}]
+    dr.basedOn = [getServiceRequestReference(pendingOrder.id)]
   }
   if (performerUuid) {
     dr.performer = [
@@ -177,11 +231,7 @@ export function saveDiagnosticReport(
       },
     ]
   }
-  if (pendingOrder?.encounterUuid) {
-    dr.encounter = {
-      reference: `Encounter/${pendingOrder.encounterUuid}`,
-    }
-  }
+  applyOrderEncounterToReport(dr, encounterUuid)
 
   const drEntry: BundleEntry = {
     fullUrl: `urn:uuid:${drId}`,
@@ -191,7 +241,7 @@ export function saveDiagnosticReport(
   return postApiCall(saveDiagnosticReportURL, wrapInBundle([drEntry]), ac)
 }
 
-export function saveTestDiagnosticReport(
+export async function saveTestDiagnosticReport(
   patientUuid: string,
   performerUuid: string,
   selectedTest: LabTest,
@@ -205,6 +255,11 @@ export function saveTestDiagnosticReport(
   >,
   dataType: Datatype[],
 ) {
+  const encounterUuid = await resolveOrderEncounterUuid(
+    selectedPendingOrder,
+    ac,
+  )
+
   let basedOn: Array<FhirReference> | null = null
   if (selectedPendingOrder)
     basedOn = [
@@ -215,13 +270,13 @@ export function saveTestDiagnosticReport(
 
   const drId = crypto.randomUUID()
   const obsEntries: BundleEntry[] = []
-  const resultArray: Array<FhirReference> = []
+  let resultArray: Array<FhirReference> = []
 
-  const createObservation = (item, index) => {
+  const createObservation = (item, index, parentObsId) => {
     const obsId = crypto.randomUUID()
     const observation: ObservationResource = {
       resourceType: 'Observation',
-      id: obsId,
+      id: parentObsId ? parentObsId : obsId,
       status: 'final',
       code: {
         coding: [
@@ -271,22 +326,28 @@ export function saveTestDiagnosticReport(
         }
         break
       default:
-        observation.valueString = labItem?.value
+        if (labItem?.value !== undefined && labItem.value !== '') {
+          observation.valueString = labItem.value
+        }
     }
 
+    applyOrderReferenceToObservation(observation, selectedPendingOrder?.id)
+
     obsEntries.push({
-      fullUrl: `urn:uuid:${obsId}`,
+      fullUrl: parentObsId ? `urn:uuid:${parentObsId}` : `urn:uuid:${obsId}`,
       resource: observation,
     })
-    resultArray.push({
-      reference: `Observation/${obsId}`,
-    })
+    resultArray.push(getObservationReference(obsId))
   }
 
   if (selectedTest.setMembers && selectedTest.setMembers.length > 0) {
+    const parentObsId = crypto.randomUUID()
+    createObservation(selectedTest, 0, parentObsId)
     selectedTest.setMembers.forEach(createObservation)
+    resultArray = []
+    resultArray.push(getObservationReference(parentObsId))
   } else {
-    createObservation(selectedTest, 0)
+    createObservation(selectedTest, 0, undefined)
   }
 
   const dr: DiagnosticReportResource = {
@@ -328,6 +389,8 @@ export function saveTestDiagnosticReport(
     dr.encounter = {
       reference: `Encounter/${selectedPendingOrder.encounterUuid}`,
     }
+  } else if (encounterUuid) {
+    dr.encounter = getEncounterReference(encounterUuid)
   }
 
   const drEntry: BundleEntry = {
