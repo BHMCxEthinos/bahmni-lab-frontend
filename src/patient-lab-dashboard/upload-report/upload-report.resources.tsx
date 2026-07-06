@@ -336,28 +336,24 @@ export async function saveTestDiagnosticReport(
       fullUrl: parentObsId ? `urn:uuid:${parentObsId}` : `urn:uuid:${obsId}`,
       resource: observation,
     })
-    resultArray.push(
-      parentObsId
-        ? getObservationReference(parentObsId)
-        : getObservationReference(obsId),
-    )
+    resultArray.push({
+      reference: parentObsId
+        ? `Observation/${parentObsId}`
+        : `Observation/${obsId}`,
+    })
   }
 
   if (selectedTest.setMembers && selectedTest.setMembers.length > 0) {
-    const parentObsId = crypto.randomUUID()
-    createObservation(selectedTest, 0, parentObsId)
     selectedTest.setMembers.forEach((item, idx) =>
       createObservation(item, idx, undefined),
     )
-    resultArray = []
-    resultArray.push(getObservationReference(parentObsId))
   } else {
     createObservation(selectedTest, 0, undefined)
   }
 
   const dr: DiagnosticReportResource = {
     resourceType: 'DiagnosticReport',
-    id: `urn:uuid:${drId}`,
+    id: drId,
     status: 'final',
     category: labCategory,
     code: {
