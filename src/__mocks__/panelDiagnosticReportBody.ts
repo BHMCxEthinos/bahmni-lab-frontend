@@ -34,6 +34,7 @@ export const panelDiagnosticReportBody = {
           {reference: 'Observation/mock-obs-uuid-2'},
           {reference: 'Observation/mock-obs-uuid-3'},
         ],
+        hasMember: [],
         basedOn: [
           {reference: 'ServiceRequest/5b0cdc41-7371-4c2f-a1e4-ed1bf7416a8d'},
         ],

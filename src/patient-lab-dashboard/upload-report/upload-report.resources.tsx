@@ -229,6 +229,7 @@ export async function saveDiagnosticReport(
     presentedForm: [
       {contentType: fileType, url: uploadFileUrl, title: uploadedFileName},
     ],
+    hasMember: [],
   }
 
   if (reportConclusion) {
@@ -283,13 +284,13 @@ export async function saveTestDiagnosticReport(
   }
 
   const drId = crypto.randomUUID()
-  const obsEntries: BundleEntry[] = []
+  let obsEntries: BundleEntry[] = []
   let resultArray: Array<FhirReference> = []
 
   // Clean, structural observation builder
   const createObservation = (item, index) => {
     const obsId = crypto.randomUUID()
-    const observation: ObservationResource = {
+    let observation: ObservationResource = {
       resourceType: 'Observation',
       id: obsId,
       status: 'final',
@@ -349,7 +350,7 @@ export async function saveTestDiagnosticReport(
     applyOrderReferenceToObservation(observation, selectedPendingOrder?.id)
 
     obsEntries.push({
-      fullUrl: `urn:uuid:${obsId}`,
+      fullUrl: `Observation/${obsId}`,
       resource: observation,
     })
 
@@ -357,23 +358,26 @@ export async function saveTestDiagnosticReport(
       reference: `Observation/${obsId}`,
     })
 
-    return obsId
+    return observation
   }
 
   // Handle building structural panel/observation relationships
   if (selectedTest.setMembers && selectedTest.setMembers.length > 0) {
     // 1. Create the parent panel placeholder group observation
-    const parentObsId = createObservation(selectedTest, -1)
+    let parentObs = createObservation(selectedTest, -1)
 
-    // Find the parent resource entry to append children members onto
-    const parentEntry = obsEntries.find(e => e.resource.id === parentObsId)
-    if (parentEntry && parentEntry.resource) {
+    if (parentObs) {
+      parentObs.hasMember = []
+
       // 2. Map through children, assign values, and tie back into parent hasMember
       selectedTest.setMembers.forEach((item, idx) => {
-        const childObsId = createObservation(item, idx)
-        parentEntry.resource.hasMember.push({
-          reference: `Observation/${childObsId}`,
-        })
+        const childObs = createObservation(item, idx)
+        if (parentObs.resourceType === 'Observation') {
+          parentObs.hasMember.push({
+            // FIXED: Pure relative URL structure matching Observation requirements
+            reference: `Observation/${childObs.id}`,
+          })
+        }
       })
     }
   } else {
@@ -400,6 +404,7 @@ export async function saveTestDiagnosticReport(
     issued: reportDate,
     effectiveDateTime: reportDate,
     result: resultArray,
+    hasMember: [],
   }
 
   if (reportConclusion) {
@@ -425,7 +430,8 @@ export async function saveTestDiagnosticReport(
   }
 
   const drEntry: BundleEntry = {
-    fullUrl: `urn:uuid:${drId}`,
+    // FIXED: Use relative paths uniformly across the entry headers
+    fullUrl: `DiagnosticReport/${drId}`,
     resource: dr,
   }
 
