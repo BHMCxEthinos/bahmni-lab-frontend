@@ -32,6 +32,7 @@ export const panelDiagnosticReportBody = {
         result: [
           {reference: 'Observation/mock-obs-uuid-1'},
           {reference: 'Observation/mock-obs-uuid-2'},
+          {reference: 'Observation/mock-obs-uuid-3'},
         ],
         basedOn: [
           {reference: 'ServiceRequest/5b0cdc41-7371-4c2f-a1e4-ed1bf7416a8d'},
@@ -44,6 +45,31 @@ export const panelDiagnosticReportBody = {
       resource: {
         resourceType: 'Observation',
         id: 'mock-obs-uuid-1',
+        status: 'final',
+        code: {
+          coding: [
+            {
+              code: '5b0cdc41-7371-4c2f-a1e4-ed1bf7416a8d',
+              display: 'Anaemia Panel',
+            },
+          ],
+        },
+        subject: {reference: 'Patient/123'},
+        effectiveDateTime: 'REPORT_DATE',
+        basedOn: [
+          {reference: 'ServiceRequest/5b0cdc41-7371-4c2f-a1e4-ed1bf7416a8d'},
+        ],
+        hasMember: [
+          {reference: 'Observation/mock-obs-uuid-2'},
+          {reference: 'Observation/mock-obs-uuid-3'},
+        ],
+      },
+    },
+    {
+      fullUrl: 'urn:uuid:mock-obs-uuid-2',
+      resource: {
+        resourceType: 'Observation',
+        id: 'mock-obs-uuid-2',
         status: 'final',
         code: {
           coding: [
@@ -62,10 +88,10 @@ export const panelDiagnosticReportBody = {
       },
     },
     {
-      fullUrl: 'urn:uuid:mock-obs-uuid-2',
+      fullUrl: 'urn:uuid:mock-obs-uuid-3',
       resource: {
         resourceType: 'Observation',
-        id: 'mock-obs-uuid-2',
+        id: 'mock-obs-uuid-3',
         status: 'final',
         code: {
           coding: [

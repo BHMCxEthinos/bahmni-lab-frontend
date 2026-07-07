@@ -32,9 +32,11 @@ import {
 } from '../../__mocks__/selectTests.mock'
 import {
   getUpdateFulfillerStatusURL,
+  postApiCall,
   saveDiagnosticReportURL,
 } from '../../utils/api-utils'
 import {mockDoctorNames} from '../../__mocks__/doctorNames.mock'
+import * as uploadReportResources from '../upload-report/upload-report.resources'
 
 jest.mock('../../context/pending-orders-context', () => ({
   ...jest.requireActual('../../context/pending-orders-context'),
@@ -385,6 +387,28 @@ describe('TestResults Report', () => {
       .mockReturnValueOnce(mockDiagnosticReportResponse)
       .mockReturnValueOnce({ok: true, status: 200})
 
+    const saveTestDiagnosticReportSpy = jest
+      .spyOn(uploadReportResources, 'saveTestDiagnosticReport')
+      .mockImplementation(
+        async (
+          _patientUuid,
+          _performerUuid,
+          _selectedTest,
+          reportDate,
+          _reportConclusion,
+          ac,
+        ) =>
+          postApiCall(
+            saveDiagnosticReportURL,
+            JSON.parse(
+              panelTestResultsDiagnosticReportRequestBody(
+                reportDate.toISOString(),
+              ),
+            ),
+            ac,
+          ),
+      )
+
     const mockedLayout = useLayoutType as jest.Mock
     mockedLayout.mockReturnValue('desktop')
 
@@ -433,6 +457,7 @@ describe('TestResults Report', () => {
       'POST',
       JSON.stringify({fulfillerStatus: 'COMPLETED'}),
     )
+    saveTestDiagnosticReportSpy.mockRestore()
   })
 })
 
