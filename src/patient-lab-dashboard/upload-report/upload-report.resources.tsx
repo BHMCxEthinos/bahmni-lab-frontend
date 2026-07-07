@@ -34,6 +34,7 @@ interface DiagnosticReportResource {
   effectiveDateTime: Date
   conclusion?: string
   basedOn?: FhirReference[]
+  hasMember?: FhirReference[]
   performer?: FhirReference[]
   encounter?: FhirReference
   presentedForm?: Array<{contentType: string; url: string; title: string}>
@@ -42,6 +43,10 @@ interface DiagnosticReportResource {
 
 interface ValueQuantity {
   value: number
+}
+
+interface ObservationMemberReference extends FhirReference {
+  resourceType: 'Observation'
 }
 
 interface ObservationResource {
@@ -59,6 +64,7 @@ interface ObservationResource {
   subject: FhirReference
   effectiveDateTime: Date
   basedOn?: FhirReference[]
+  hasMember?: FhirReference[]
   valueQuantity?: ValueQuantity
   valueCodeableConcept?: {
     coding: [
@@ -118,6 +124,13 @@ const getEncounterReference = (encounterUuid: string): FhirReference => ({
 
 const getObservationReference = (resourceId: string): FhirReference => ({
   reference: `Observation/${resourceId}`,
+})
+
+const getContainedObservationReference = (
+  resourceId: string,
+): ObservationMemberReference => ({
+  reference: `#${resourceId}`,
+  resourceType: 'Observation',
 })
 
 async function resolveOrderEncounterUuid(
@@ -261,28 +274,30 @@ export async function saveTestDiagnosticReport(
   )
 
   let basedOn: Array<FhirReference> | null = null
-  if (selectedPendingOrder)
+  if (selectedPendingOrder) {
     basedOn = [
       {
         reference: `ServiceRequest/${selectedPendingOrder.id}`,
       },
     ]
+  }
 
   const drId = crypto.randomUUID()
   const obsEntries: BundleEntry[] = []
   let resultArray: Array<FhirReference> = []
 
-  const createObservation = (item, index, parentObsId) => {
+  // Clean, structural observation builder
+  const createObservation = (item, index) => {
     const obsId = crypto.randomUUID()
     const observation: ObservationResource = {
       resourceType: 'Observation',
-      id: parentObsId ? parentObsId : obsId,
+      id: obsId,
       status: 'final',
       code: {
         coding: [
           {
             code: item.uuid,
-            display: item.name.display,
+            display: item.name?.display || item.display || '',
           },
         ],
       },
@@ -295,60 +310,75 @@ export async function saveTestDiagnosticReport(
     if (labItem?.abnormal === true) {
       observation.interpretation = [
         {
-          coding: [
-            {
-              code: 'A',
-            },
-          ],
+          coding: [{code: 'A'}],
         },
       ]
     }
 
-    switch (dataType[index]?.name) {
-      case 'Boolean':
-        observation.valueBoolean = labItem?.value.toLowerCase() === 'true'
-        break
-      case 'Numeric':
-        if (labItem?.value !== undefined && labItem.value !== '') {
-          observation.valueQuantity = {
-            value: parseFloat(labItem.value),
+    if (index >= 0 && dataType[index]) {
+      switch (dataType[index].name) {
+        case 'Boolean':
+          observation.valueBoolean = labItem?.value.toLowerCase() === 'true'
+          break
+        case 'Numeric':
+          if (labItem?.value !== undefined && labItem.value !== '') {
+            observation.valueQuantity = {
+              value: parseFloat(labItem.value),
+            }
           }
-        }
-        break
-      case 'Coded':
-        observation.valueCodeableConcept = {
-          coding: [
-            {
-              code: labItem?.codableConceptUuid,
-              display: labItem?.value,
-            },
-          ],
-        }
-        break
-      default:
-        if (labItem?.value !== undefined && labItem.value !== '') {
-          observation.valueString = labItem.value
-        }
+          break
+        case 'Coded':
+          if (labItem?.codableConceptUuid) {
+            observation.valueCodeableConcept = {
+              coding: [
+                {
+                  code: labItem.codableConceptUuid,
+                  display: labItem.value,
+                },
+              ],
+            }
+          }
+          break
+        default:
+          if (labItem?.value !== undefined && labItem.value !== '') {
+            observation.valueString = labItem.value
+          }
+      }
     }
+
     applyOrderReferenceToObservation(observation, selectedPendingOrder?.id)
 
     obsEntries.push({
-      fullUrl: parentObsId ? `urn:uuid:${parentObsId}` : `urn:uuid:${obsId}`,
+      fullUrl: `urn:uuid:${obsId}`,
       resource: observation,
     })
+
     resultArray.push({
-      reference: parentObsId
-        ? `Observation/${parentObsId}`
-        : `Observation/${obsId}`,
+      reference: `Observation/${obsId}`,
     })
+
+    return obsId
   }
 
+  // Handle building structural panel/observation relationships
   if (selectedTest.setMembers && selectedTest.setMembers.length > 0) {
-    selectedTest.setMembers.forEach((item, idx) =>
-      createObservation(item, idx, undefined),
-    )
+    // 1. Create the parent panel placeholder group observation
+    const parentObsId = createObservation(selectedTest, -1)
+
+    // Find the parent resource entry to append children members onto
+    const parentEntry = obsEntries.find(e => e.resource.id === parentObsId)
+    if (parentEntry && parentEntry.resource) {
+      // 2. Map through children, assign values, and tie back into parent hasMember
+      selectedTest.setMembers.forEach((item, idx) => {
+        const childObsId = createObservation(item, idx)
+        parentEntry.resource.hasMember.push({
+          reference: `Observation/${childObsId}`,
+        })
+      })
+    }
   } else {
-    createObservation(selectedTest, 0, undefined)
+    // Single standalone lab test
+    createObservation(selectedTest, 0)
   }
 
   const dr: DiagnosticReportResource = {
@@ -375,7 +405,6 @@ export async function saveTestDiagnosticReport(
   if (reportConclusion) {
     dr.conclusion = reportConclusion
   }
-
   if (basedOn) {
     dr.basedOn = basedOn
   }
@@ -386,6 +415,7 @@ export async function saveTestDiagnosticReport(
       },
     ]
   }
+
   if (selectedPendingOrder?.encounterUuid) {
     dr.encounter = {
       reference: `Encounter/${selectedPendingOrder.encounterUuid}`,
