@@ -17,7 +17,7 @@ import {
   TextInput,
 } from 'carbon-components-react'
 import dayjs from 'dayjs'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import useSWR from 'swr'
 import Overlay from '../../common/overlay'
 import {usePendingLabOrderContext} from '../../context/pending-orders-context'
@@ -33,13 +33,8 @@ import {
 import {getTestName} from '../../utils/helperFunctions'
 import DoctorListDropdown from '../doctors-list-dropdown/doctor-list-dropdown'
 import {saveTestDiagnosticReport} from '../upload-report/upload-report.resources'
-import {Datatype, TestResultConcept, TestResultsLabOrder} from '../../types'
-import {LabTest} from '../../types/selectTest'
-import {
-  collectLeafConcepts,
-  collectLeafDatatypes,
-  isPanelConcept,
-} from '../../utils/conceptTreeUtils'
+import {TestResultsLabOrder} from '../../types'
+import {useAllTestAndPanel} from '../../context/lab-test-results-context'
 
 interface TestResultProps {
   saveHandler: Function
@@ -47,18 +42,6 @@ interface TestResultProps {
   header: string
   patientUuid: string
 }
-
-const toLabTest = (concept: TestResultConcept): LabTest => ({
-  uuid: concept.uuid,
-  name: {
-    display: concept.name.display,
-    uuid: concept.name.uuid,
-  },
-  names: concept.names,
-  set: concept.set,
-  conceptClass: concept.conceptClass,
-  setMembers: (concept.setMembers ?? []).map(toLabTest),
-})
 
 const TestResults: React.FC<TestResultProps> = ({
   saveHandler,
@@ -82,36 +65,54 @@ const TestResults: React.FC<TestResultProps> = ({
   >(true)
   const [isSaveButtonClicked, setIsSaveButtonClicked] = useState(false)
   const [labResult, setLabResult] = useState(new Map())
-  const pendingOrders = selectedPendingOrder ?? []
-  const testResultData: Array<TestResultsLabOrder | undefined> = []
-
+  const testResultData = []
+  const [selectedTests, setSelectedTests] = useState([])
+  const {allTestsAndPanels} = useAllTestAndPanel()
+  useEffect(() => {
+    const filteredTests = allTestsAndPanels.filter(
+      pendingOrderTest =>
+        selectedPendingOrder.findIndex(
+          tempPendingTest =>
+            tempPendingTest?.conceptUuid === pendingOrderTest.uuid,
+        ) > -1,
+    )
+    setSelectedTests(filteredTests)
+  }, [selectedPendingOrder, allTestsAndPanels])
   const handleDiscard = () => {
     setReportDate(null)
     setReportConclusion('')
+    setSelectedTests([])
     setDoctor(null)
     setShowReportConclusionLabel(true)
     setLabResult(new Map())
     setAnswer(new Map())
   }
 
-  pendingOrders.forEach(pendingOrder => {
+  selectedPendingOrder.forEach(selectedPendingOrder => {
     // eslint-disable-next-line
-    const {data: testResultResponse} = useSWR<TestResultsLabOrder, Error>(
-      getTestResults(pendingOrder.conceptUuid),
-      fetcher,
-      swrOptions,
-    )
-    testResultData.push(testResultResponse)
+    const {data: testResults, error: testResultsError} = useSWR<
+      TestResultsLabOrder,
+      Error
+    >(getTestResults(selectedPendingOrder.conceptUuid), fetcher, swrOptions)
+    testResultData.push(testResults)
   })
 
   const isDisabled = () =>
     !reportDate || !doctor || !isValidDataPresent() || isSaveButtonClicked
 
-  const getTestData = (conceptData: TestResultConcept) => {
-    if (!conceptData) {
-      return []
+  const getTestData = test => {
+    const matchingData = testResultData.find(
+      item => item.data.uuid === test.uuid,
+    )
+
+    if (matchingData) {
+      const dataType =
+        matchingData.data.setMembers.length > 0
+          ? matchingData.data.setMembers.map(member => member.datatype)
+          : [matchingData.data.datatype]
+      return dataType
     }
-    return collectLeafDatatypes(conceptData)
+    return []
   }
 
   const isInvalid = test => {
@@ -127,24 +128,6 @@ const TestResults: React.FC<TestResultProps> = ({
     return false
   }
 
-  const hasInvalidConceptValue = (concept: TestResultConcept): boolean => {
-    if (isPanelConcept(concept)) {
-      return concept.setMembers.some(hasInvalidConceptValue)
-    }
-    return isInvalid(concept)
-  }
-
-  const allLeafResultsPresent = () =>
-    testResultData.every(testResultResponse => {
-      if (!testResultResponse?.data) {
-        return true
-      }
-      return collectLeafConcepts(testResultResponse.data).every(leaf => {
-        const value = labResult.get(leaf.uuid)?.value
-        return value !== undefined && value !== ''
-      })
-    })
-
   const isValidDataPresent = () => {
     if (labResult.size == 0) return false
 
@@ -152,14 +135,17 @@ const TestResults: React.FC<TestResultProps> = ({
       if (mapEntry.value === '') return false
     }
 
-    return (
-      allLeafResultsPresent() &&
-      testResultData.every(
-        testResultResponse =>
-          !testResultResponse?.data ||
-          !hasInvalidConceptValue(testResultResponse.data),
-      )
-    )
+    for (let index = 0; index < testResultData.length; index++) {
+      for (let mapEntry of labResult.keys()) {
+        if (testResultData[index].data.uuid === mapEntry) {
+          if (isInvalid(testResultData[index].data)) {
+            return false
+          }
+        }
+      }
+    }
+
+    return true
   }
 
   const renderButtonGroup = () => (
@@ -182,34 +168,24 @@ const TestResults: React.FC<TestResultProps> = ({
     const ac = new AbortController()
     let allSuccess: boolean = true
     try {
-      for (
-        let orderIndex = 0;
-        orderIndex < pendingOrders.length;
-        orderIndex++
-      ) {
-        const pendingOrder = pendingOrders[orderIndex]
-        const conceptData = testResultData[orderIndex]?.data
-        if (!conceptData) {
-          allSuccess = false
-          break
-        }
+      for (let index = 0; index < selectedTests.length; index++) {
         const response = await saveTestDiagnosticReport(
           patientUuid,
           doctor.uuid,
-          toLabTest(conceptData),
+          selectedTests[index],
           reportDate,
           reportConclusion,
           ac,
-          pendingOrder,
+          selectedPendingOrder[index],
           labResult,
-          getTestData(conceptData),
+          getTestData(selectedTests[index]),
         )
         if (!response.ok) {
           allSuccess = false
           break
         }
         await postApiCall(
-          getUpdateFulfillerStatusURL(pendingOrder.id),
+          getUpdateFulfillerStatusURL(selectedPendingOrder[index].id),
           {fulfillerStatus: 'COMPLETED'},
           ac,
         )
@@ -301,7 +277,7 @@ const TestResults: React.FC<TestResultProps> = ({
     return itemName
   }
 
-  const renderInputField = (test, fieldKey: string) => {
+  const renderInputField = (test, index) => {
     if (test) {
       const datatype = test.datatype.name
       const items = getItems(test, datatype)
@@ -325,9 +301,9 @@ const TestResults: React.FC<TestResultProps> = ({
             />
           ) : (
             <TextInput
-              key={`text-${fieldKey}`}
+              key={`text-${test.uuid}-${index}`}
               labelText={getTestNameWithUnits(test)}
-              id={fieldKey}
+              id={`${test.uuid}-${index}`}
               placeholder="Enter Value"
               size="sm"
               onChange={e => updateOrStoreLabResult(e.target.value, test)}
@@ -376,26 +352,15 @@ const TestResults: React.FC<TestResultProps> = ({
       )
     }
   }
-  const renderConceptFields = (
-    concept: TestResultConcept | undefined,
-    orderIndex: number,
-  ) => {
-    if (!concept) {
-      return null
-    }
-    if (isPanelConcept(concept)) {
-      return concept.setMembers.map(member =>
-        renderConceptFields(member, orderIndex),
-      )
-    }
-    return renderInputField(concept, `${orderIndex}-${concept.uuid}`)
-  }
-
   const renderTestResultWidget = () => {
     return (
       <>
-        {testResultData.map((testResultResponse, orderIndex) =>
-          renderConceptFields(testResultResponse?.data, orderIndex),
+        {testResultData.map((testResult, index) =>
+          testResult?.data.conceptClass?.name === 'LabSet'
+            ? testResult?.data.setMembers.map((test, index) =>
+                renderInputField(test, index),
+              )
+            : renderInputField(testResult?.data, index),
         )}
       </>
     )
