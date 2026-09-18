@@ -30,6 +30,9 @@ export const successMessage = 'Report successfully uploaded'
 export const failureMessage = 'Failed to upload report'
 export const labEntryHomePath = '/home'
 export const userLocationKey = 'bahmni.user.location'
+export const legacyLocaleStorageKey = 'NG_TRANSLATE_LANG_KEY'
+// Bare language subtags this app ships translations for (see ../../translations).
+export const supportedLocales = ['en', 'es', 'fr', 'hi', 'it', 'pt', 'zh']
 export const documentPath = '/uploaded_results/'
 export const uploadedDocumentEncounterType = 'LAB_RESULT'
 

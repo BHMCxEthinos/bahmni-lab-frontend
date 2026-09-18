@@ -17,6 +17,7 @@
 import {defineConfigSchema, getAsyncLifecycle} from '@openmrs/esm-framework'
 import {configSchema} from './config-schema'
 import {labliteModuleName, searchModuleName} from './utils/constants'
+import {startLegacyLocaleSync} from './utils/helperFunctions'
 
 /**
  * This tells the app shell how to obtain translation files: that they
@@ -43,6 +44,9 @@ const backendDependencies = {
 
 function setupOpenMRS() {
   defineConfigSchema(searchModuleName, configSchema)
+  // Runs once at bootstrap, regardless of which route this app is entered
+  // on, and keeps re-asserting the legacy locale for the app's lifetime.
+  startLegacyLocaleSync()
 
   const options = {
     featureName: 'lab-lite',

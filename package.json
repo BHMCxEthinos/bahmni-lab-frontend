@@ -1,6 +1,6 @@
 {
   "name": "@bahmni/lab-app",
-  "version": "1.0.2",
+  "version": "2.1.0",
   "description": "Bahmni Lab Frontend",
   "browser": "dist/bahmni-lab-app.js",
   "main": "src/index.ts",

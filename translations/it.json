@@ -1,0 +1,9 @@
+{
+  "title": "Applicazione di Accesso al Laboratorio",
+  "welcome": "Benvenuto in Accesso al Laboratorio",
+  "helpText": "Fai Clic Sull'icona Di Ricerca Sopra Per Iniziare",
+  "activePatientList": "Elenco Pazienti Attivi",
+  "patientId": "ID Paziente",
+  "patientName": "Nome del Paziente",
+  "noPatients": "Nessun paziente trovato."
+}

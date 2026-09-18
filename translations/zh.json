@@ -1,0 +1,9 @@
+{
+  "title": "实验室录入应用",
+  "welcome": "欢迎使用实验室录入",
+  "helpText": "请点击上方的搜索图标开始",
+  "activePatientList": "活跃患者列表",
+  "patientId": "患者编号",
+  "patientName": "患者姓名",
+  "noPatients": "未找到患者。"
+}
